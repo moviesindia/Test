@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quran PDF Viewer</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+      color: #fff;
+    }
+    #pdf-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+    }
+    canvas {
+      max-width: 100%;
+      max-height: 100%;
+    }
+    #controls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 10px;
+      border-radius: 8px;
+    }
+    button, input {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #9b9e9c;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+    }
+    button:hover {
+      background: #666666;
+    }
+  </style>
+</head>
+<body>
+  <div id="pdf-container">
+    <canvas id="pdf-render"></canvas>
+    <div id="controls">
+      <button id="prev">Previous</button>
+      <input type="number" id="page-number" placeholder="Page" min="1">
+      <button id="go-to-page">Go</button>
+      <button id="next">Next</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script>
+      
+      
+       // Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+      
+      
+    const url = 'quran.pdf'; // Replace with your Quran PDF path
+
+// Parse URL parameters to get initial page
+const urlParams = new URLSearchParams(window.location.search);
+const initialPage = parseInt(urlParams.get('page')) || 1;
+
+let pdfDoc = null,
+    pageNum = initialPage, // Use initialPage instead of hardcoded 1
+    pageRendering = false,
+    pageNumPending = null,
+    scale = 1, // Automatically scales to fit
+    canvas = document.getElementById('pdf-render'),
+    ctx = canvas.getContext('2d'),
+    controls = document.getElementById('controls');
+
+const container = document.getElementById('pdf-container');
+
+// Load the PDF
+pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
+  pdfDoc = pdfDoc_;
+  document.getElementById('page-number').setAttribute('max', pdfDoc.numPages);
+  
+  // Ensure the initial page is within the document's page range
+  pageNum = Math.min(Math.max(initialPage, 1), pdfDoc.numPages);
+  renderPage(pageNum);
+});
+
+// Rest of your existing code remains the same...
+
+
+    // Render the page
+    function renderPage(num) {
+      pageRendering = true;
+      pdfDoc.getPage(num).then(page => {
+        const viewport = page.getViewport({ scale: 1 });
+        scale = Math.min(
+          container.clientWidth / viewport.width,
+          container.clientHeight / viewport.height
+        );
+
+        const scaledViewport = page.getViewport({ scale });
+
+        canvas.width = scaledViewport.width;
+        canvas.height = scaledViewport.height;
+
+        const renderContext = {
+          canvasContext: ctx,
+          viewport: scaledViewport
+        };
+        const renderTask = page.render(renderContext);
+
+        renderTask.promise.then(() => {
+          pageRendering = false;
+          if (pageNumPending !== null) {
+            renderPage(pageNumPending);
+            pageNumPending = null;
+          }
+        });
+      });
+
+      // Update page number
+      document.getElementById('page-number').value = num;
+    }
+
+    // Queue rendering
+    function queueRenderPage(num) {
+      if (pageRendering) {
+        pageNumPending = num;
+      } else {
+        renderPage(num);
+      }
+    }
+
+    // Navigation controls
+    document.getElementById('prev').addEventListener('click', () => {
+      if (pageNum <= 1) return;
+      pageNum--;
+      queueRenderPage(pageNum);
+    });
+
+    document.getElementById('next').addEventListener('click', () => {
+      if (pageNum >= pdfDoc.numPages) return;
+      pageNum++;
+      queueRenderPage(pageNum);
+    });
+
+    document.getElementById('go-to-page').addEventListener('click', () => {
+      const pageNumber = parseInt(document.getElementById('page-number').value);
+      if (pageNumber > 0 && pageNumber <= pdfDoc.numPages) {
+        pageNum = pageNumber;
+        queueRenderPage(pageNum);
+      } else {
+        alert('Invalid page number');
+      }
+    });
+
+    // Show controls on click
+    canvas.addEventListener('click', () => {
+      controls.style.display = controls.style.display === 'none' ? 'flex' : 'none';
+    });
+
+    // Swipe gesture controls
+    let touchStartX = 0, touchEndX = 0;
+
+    container.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    container.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleGesture();
+    });
+
+    function handleGesture() {
+      if (touchEndX < touchStartX - 50 && pageNum < pdfDoc.numPages) {
+        pageNum++;
+        queueRenderPage(pageNum);
+      } else if (touchEndX > touchStartX + 50 && pageNum > 1) {
+        pageNum--;
+        queueRenderPage(pageNum);
+      }
+    }
+    
+    
+   
+  // Render the page with high resolution
+  function renderPage(num) {
+    pageRendering = true;
+    pdfDoc.getPage(num).then(page => {
+      const viewport = page.getViewport({ scale: 1 });
+
+      // Adjust for high-resolution rendering
+      const scaleFactor = Math.min(
+        container.clientWidth / viewport.width,
+        container.clientHeight / viewport.height
+      );
+      const scaledViewport = page.getViewport({ scale: scaleFactor });
+
+      // Improve quality with device pixel ratio
+      const dpr = window.devicePixelRatio || 1; // Device Pixel Ratio
+      canvas.width = scaledViewport.width * dpr;
+      canvas.height = scaledViewport.height * dpr;
+
+      canvas.style.width = `${scaledViewport.width}px`;
+      canvas.style.height = `${scaledViewport.height}px`;
+
+      const renderContext = {
+        canvasContext: ctx,
+        viewport: scaledViewport,
+        transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null, // Adjust for DPI
+      };
+
+      const renderTask = page.render(renderContext);
+      renderTask.promise.then(() => {
+        pageRendering = false;
+        if (pageNumPending !== null) {
+          renderPage(pageNumPending);
+          pageNumPending = null;
+        }
+      });
+    });
+
+    // Update page number
+    document.getElementById('page-number').value = num;
+  }
+  
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+// Add loading spinner to HTML
+const loadingSpinner = document.createElement('div');
+loadingSpinner.id = 'loading-spinner';
+loadingSpinner.style.cssText = `
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    color: white;
+    background: rgba(0,0,0,0.5);
+    padding: 20px;
+    border-radius: 10px;
+`;
+loadingSpinner.textContent = 'Loading...';
+container.appendChild(loadingSpinner);
+
+// Show loading spinner
+function showLoadingSpinner() {
+    loadingSpinner.style.display = 'block';
+}
+
+// Hide loading spinner
+function hideLoadingSpinner() {
+    loadingSpinner.style.display = 'none';
+}
+
+// Preload adjacent pages
+function preloadAdjacentPages(currentPage) {
+    if (!pdfDoc) return;
+    
+    const pagesToPreload = [currentPage - 1, currentPage + 1];
+    
+    pagesToPreload.forEach(pageNum => {
+        if (pageNum > 0 && pageNum <= pdfDoc.numPages) {
+            pdfDoc.getPage(pageNum); // This caches the page
+        }
+    });
+}
+
+// Render the page with optimized loading
+function renderPage(num) {
+    if (pageRendering) {
+        pageNumPending = num;
+        return;
+    }
+
+    showLoadingSpinner();
+    pageRendering = true;
+    canvas.style.opacity = '0.5';
+
+    pdfDoc.getPage(num).then(page => {
+        const viewport = page.getViewport({ scale: 1 });
+        
+        // Slightly reduced scale for faster rendering
+        scale = Math.min(
+            container.clientWidth / viewport.width,
+            container.clientHeight / viewport.height
+        ) * 0.9;
+
+        const scaledViewport = page.getViewport({ scale });
+
+        // High DPI canvas rendering
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = scaledViewport.width * dpr;
+        canvas.height = scaledViewport.height * dpr;
+        canvas.style.width = `${scaledViewport.width}px`;
+        canvas.style.height = `${scaledViewport.height}px`;
+
+        const renderContext = {
+            canvasContext: ctx,
+            viewport: scaledViewport,
+            transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null,
+            imageLayer: null // Disable image layer to reduce memory usage
+        };
+
+        const renderTask = page.render(renderContext);
+
+        renderTask.promise.then(() => {
+            pageRendering = false;
+            canvas.style.opacity = '1';
+            hideLoadingSpinner();
+
+            // Preload adjacent pages
+            preloadAdjacentPages(num);
+
+            if (pageNumPending !== null) {
+                renderPage(pageNumPending);
+                pageNumPending = null;
+            }
+        }).catch(error => {
+            console.error('Page render error:', error);
+            pageRendering = false;
+            canvas.style.opacity = '1';
+            hideLoadingSpinner();
+        });
+    });
+
+    // Update page number
+    document.getElementById('page-number').value = num;
+}
+
+// Load the PDF
+pdfjsLib.getDocument({
+    url: url,
+    cMapUrl: 'https://unpkg.com/pdfjs-dist@2.16.105/cmaps/',
+    cMapPacked: true,
+    disableWorker: false
+}).promise.then(pdfDoc_ => {
+    pdfDoc = pdfDoc_;
+    document.getElementById('page-number').setAttribute('max', pdfDoc.numPages);
+    
+    // Ensure the initial page is within the document's page range
+    pageNum = Math.min(Math.max(initialPage, 1), pdfDoc.numPages);
+    renderPage(pageNum);
+}).catch(error => {
+    console.error('PDF loading error:', error);
+    hideLoadingSpinner();
+});
+ 
+ 
+  
+  </script>
+</body>
+</html>

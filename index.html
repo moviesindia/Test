@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Tawjih</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+:root {
+    --primary-bg-color: #121212;
+    --secondary-bg-color: #1f1f1f;
+    --text-color: #e0e0e0;
+    --highlight-color: #383838;
+    --hover-color: #4a4a4a;
+    --font-family: 'Poppins', sans-serif;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-family);
+    background-color: var(--primary-bg-color);
+    color: var(--text-color);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--secondary-bg-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    transition: padding 0.3s ease, background-color 0.3s ease;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+}
+
+.header-top h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 600;
+    color: #f8f8f8;
+    transition: font-size 0.3s ease;
+}
+
+.header-top .icons {
+    display: flex;
+    gap: 20px;
+}
+
+.header-top .icons i {
+    font-size: 22px;
+    cursor: pointer;
+    color: #f8f8f8;
+    transition: color 0.3s ease;
+}
+
+.header-top .icons i:hover,
+.header-top .icons i:active {
+    color: #a9a9a9;
+}
+
+.header-bottom {
+    background-color: var(--secondary-bg-color);
+    padding: 10px 0;
+    transition: padding 0.3s ease, background-color 0.3s ease;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.tabs a {
+    color: #b0b0b0;
+    font-size: 16px;
+    text-decoration: none;
+    padding: 12px 25px;
+    font-family: var(--font-family);
+    border-radius: 25px;
+    transition: background-color 0.3s ease, color 0.3s ease, padding 0.3s ease;
+}
+
+.tabs .active {
+    background-color: var(--highlight-color);
+    color: #f8f8f8;
+    font-weight: 600;
+}
+
+.content {
+    padding-top: 160px;
+    transition: padding-top 0.3s ease;
+}
+
+.list-item {
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    // width: 75vw;
+    margin-bottom: 15px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.list-item a {
+    color: #f8f8f8;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.list-item a:hover {
+    background-color: var(--highlight-color);
+    transform: scale(1.02);
+}
+
+/* Search bar styles */
+.search-bar {
+    display: none;
+    justify-content: center;
+    padding: 12px 25px;
+    background-color: var(--secondary-bg-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    position: relative;
+    z-index: 999;
+    transition: margin-top 0.3s ease;
+}
+
+.search-bar.active {
+    display: flex;
+}
+
+.search-bar input {
+    width: 70%;
+    padding: 8px 15px;
+    border-radius: 25px;
+    border: none;
+    background-color: #2d2d2d;
+    color: var(--text-color);
+    font-family: var(--font-family);
+    font-size: 14px;
+    margin-right: 10px;
+    outline: none;
+}
+
+.search-bar button {
+    border: none;
+    background-color: var(--highlight-color);
+    color: var(--text-color);
+    padding: 8px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-bar button:hover {
+    background-color: var(--hover-color);
+}
+
+/* Responsive adjustments for the search bar */
+@media (max-width: 768px) {
+    .header-top h1 {
+        font-size: 20px;
+    }
+    .header-top {
+        padding: 10px 15px;
+    }
+    .header-bottom .tabs a {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+    .content {
+        padding-top: 100px;
+    }
+    .list-item a {
+        font-size: 16px;
+    }
+    .search-bar {
+        flex-direction: column;
+        padding: 15px 20px;
+        margin-top: 10px;
+    }
+    .search-bar input {
+        width: 100%;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+    .search-bar button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+
+/* Search bar styling */
+.search-bar {
+    padding: 8px;
+    top: 1vh;
+    width: 80%; /* Adjust the width to 80% of its parent container */
+    max-width: 600px; /* Optional: Set a max width if you want to limit how wide it can grow */
+    margin: 0 auto;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center; /* Center the button vertically */
+    justify-content: space-between; /* Space between the input and button */
+}
+
+/* Button styling */
+.search-bar button {
+    font-size: 12px;
+    padding: 5px;
+    width: 25%; /* Prevent button from stretching */
+}
+    .search-bar input {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+  
+  .list-item{
+      width: 100vw;
+  }
+}
+
+
+    </style>
+</head>
+<body>
+   <div class="header">
+    <div class="header-top">
+        <h1>AL-Tawjih</h1>
+        <div class="icons">
+            <i id="search-icon" class="fas fa-search"></i>
+            <i class="fas fa-book"></i>
+            <i class="fas fa-undo"></i>
+            <i class="fas fa-ellipsis-v"></i>
+        </div>
+    </div>
+    <div class="search-bar" id="search-bar" style="display: none;">
+        <input type="text" id="search-input" placeholder="Search Surah or Juz...">    
+        <button id="search-btn"><i class="fas fa-search"></i></button>   
+          </div>
+   
+    <div class="header-bottom">
+        <div class="tabs">
+            <a href="#" class="tab-link active" data-tab="surah-tab">SURAH</a>
+            <a href="#" class="tab-link" data-tab="juz-tab">JUZ</a>
+        </div>
+    </div>
+</div>
+    <div class="content">
+        <!-- Surah Tab -->
+        <div id="surah-tab" class="tab-content active">
+            <div class="list-item">
+    <a href="pdf.html?page=1" data-page="1">
+        <div>1</div>
+        <div>Surat Al-Fatihah</div>
+        <div>1</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=2" data-page="2">
+        <div>2</div>
+        <div>Surat Al-Baqarah</div>
+        <div>2</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=50" data-page="50">
+        <div>3</div>
+        <div>Surat Aali Imran</div>
+        <div>50</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=77" data-page="77">
+        <div>4</div>
+        <div>Surat An-Nisa'</div>
+        <div>77</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=106" data-page="106">
+        <div>5</div>
+        <div>Surat Al-Ma'idah</div>
+        <div>106</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=128" data-page="128">
+        <div>6</div>
+        <div>Surat Al-An'am</div>
+        <div>128</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=151" data-page="151">
+        <div>7</div>
+        <div>Surat Al-A'raf</div>
+        <div>151</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=177" data-page="177">
+        <div>8</div>
+        <div>Surat Al-Anfal</div>
+        <div>177</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=187" data-page="187">
+        <div>9</div>
+        <div>Surat At-Taubah</div>
+        <div>187</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=208" data-page="208">
+        <div>10</div>
+        <div>Surat Yunus</div>
+        <div>208</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=221" data-page="221">
+        <div>11</div>
+        <div>Surat Hud</div>
+        <div>221</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=235" data-page="235">
+        <div>12</div>
+        <div>Surat Yusuf</div>
+        <div>235</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=249" data-page="249">
+        <div>13</div>
+        <div>Surat Ar-Ra'd</div>
+        <div>249</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=255" data-page="255">
+        <div>14</div>
+        <div>Surat Ibrahim</div>
+        <div>255</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=262" data-page="262">
+        <div>15</div>
+        <div>Surat Al-Hijr</div>
+        <div>262</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=267" data-page="267">
+        <div>16</div>
+        <div>Surat An-Nahl</div>
+        <div>267</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=282" data-page="282">
+        <div>17</div>
+        <div>Surat Al-Isra'</div>
+        <div>282</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=293" data-page="293">
+        <div>18</div>
+        <div>Surat Al-Kahf</div>
+        <div>293</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=305" data-page="305">
+        <div>19</div>
+        <div>Surat Maryam</div>
+        <div>305</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=312" data-page="312">
+        <div>20</div>
+        <div>Surat Ta-Ha</div>
+        <div>312</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=322" data-page="322">
+        <div>21</div>
+        <div>Surat Al-Anbiya'</div>
+        <div>322</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=332" data-page="332">
+        <div>22</div>
+        <div>Surat Al-Haj</div>
+        <div>332</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=342" data-page="342">
+        <div>23</div>
+        <div>Surat Al-Mu'minun</div>
+        <div>342</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=350" data-page="350">
+        <div>24</div>
+        <div>Surat An-Nur</div>
+        <div>350</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=358" data-page="358">
+        <div>25</div>
+        <div>Surat Al-Furqan</div>
+        <div>358</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=367" data-page="367">
+        <div>26</div>
+        <div>Surat Ash-Shu'ara'</div>
+        <div>367</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=377" data-page="377">
+        <div>27</div>
+        <div>Surat An-Naml</div>
+        <div>377</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=385" data-page="385">
+        <div>28</div>
+        <div>Surat Al-Qasas</div>
+        <div>385</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=396" data-page="396">
+        <div>29</div>
+        <div>Surat Al-Ankabut</div>
+        <div>396</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=404" data-page="404">
+        <div>30</div>
+        <div>Surat Ar-Rum</div>
+        <div>404</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=411" data-page="411">
+        <div>31</div>
+        <div>Surat Luqman</div>
+        <div>411</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=415" data-page="415">
+        <div>32</div>
+        <div>Surat As-Sajdah</div>
+        <div>415</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=418" data-page="418">
+        <div>33</div>
+        <div>Surat Al-Ahzab</div>
+        <div>418</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=434" data-page="434">
+        <div>34</div>
+        <div>Surat Saba'</div>
+        <div>434</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=434" data-page="434">
+        <div>35</div>
+        <div>Surat Al-Fatir</div>
+        <div>434</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=440" data-page="440">
+        <div>36</div>
+        <div>Surat Yaseen</div>
+        <div>440</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=445" data-page="445">
+        <div>37</div>
+        <div>Surat As-Saffah</div>
+        <div>445</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=453" data-page="453">
+        <div>38</div>
+        <div>Surat Sad</div>
+        <div>453</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=458" data-page="458">
+        <div>39</div>
+        <div>Surat Az-Zumar</div>
+        <div>458</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=467" data-page="467">
+        <div>40</div>
+        <div>Surat Ghafar</div>
+        <div>467</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=477" data-page="477">
+        <div>41</div>
+        <div>Surat Fussilat</div>
+        <div>477</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=483" data-page="483">
+        <div>42</div>
+        <div>Surat Ash-Shura</div>
+        <div>483</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=489" data-page="489">
+        <div>43</div>
+        <div>Surat Az-Zukhruf</div>
+        <div>489</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=496" data-page="496">
+        <div>44</div>
+        <div>Surat Ad-Dukhan</div>
+        <div>496</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=499" data-page="499">
+        <div>45</div>
+        <div>Surat Al-Jathiyah</div>
+        <div>499</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=502" data-page="502">
+        <div>46</div>
+        <div>Surat Al-Ahqaf</div>
+        <div>502</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=507" data-page="507">
+        <div>47</div>
+        <div>Surat Muhammad</div>
+        <div>507</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=511" data-page="511">
+        <div>48</div>
+        <div>Surat Al-Fath</div>
+        <div>511</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=515" data-page="515">
+        <div>49</div>
+        <div>Surat Al-Hujurat</div>
+        <div>515</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=518" data-page="518">
+        <div>50</div>
+        <div>Surat Qaf</div>
+        <div>518</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=520" data-page="520">
+        <div>51</div>
+        <div>Surat Adh-Dhariyat</div>
+        <div>520</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=523" data-page="523">
+        <div>52</div>
+        <div>Surat At-Tur</div>
+        <div>523</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=526" data-page="526">
+        <div>53</div>
+        <div>Surat An-Najm</div>
+        <div>526</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=528" data-page="528">
+        <div>54</div>
+        <div>Surat Al-Qamar</div>
+        <div>528</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=531" data-page="531">
+        <div>55</div>
+        <div>Surat Ar-Rahman</div>
+        <div>531</div>
+    </a>
+</div>
+
+
+<div class="list-item">
+    <a href="pdf.html?page=534" data-page="534">
+        <div>56</div>
+        <div>Surat Al-Waqi'ah</div>
+        <div>534</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=537" data-page="537">
+        <div>57</div>
+        <div>Surat Al-Hadid</div>
+        <div>537</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=542" data-page="542">
+        <div>58</div>
+        <div>Surat Al-Mujadilah</div>
+        <div>542</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=545" data-page="545">
+        <div>59</div>
+        <div>Surat Al-Hashr</div>
+        <div>545</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=549" data-page="549">
+        <div>60</div>
+        <div>Surat Al-Mumtahanah</div>
+        <div>549</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=551" data-page="551">
+        <div>61</div>
+        <div>Surat As-Saff</div>
+        <div>551</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=553" data-page="553">
+        <div>62</div>
+        <div>Surat Al-Jumu'ah</div>
+        <div>553</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=554" data-page="554">
+        <div>63</div>
+        <div>Surat Al-Munafiqun</div>
+        <div>554</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=556" data-page="556">
+        <div>64</div>
+        <div>Surat At-Taghabun</div>
+        <div>556</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=558" data-page="558">
+        <div>65</div>
+        <div>Surat At-Talaq</div>
+        <div>558</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=560" data-page="560">
+        <div>66</div>
+        <div>Surat At-Tahrim</div>
+        <div>560</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=562" data-page="562">
+        <div>67</div>
+        <div>Surat Al-Mulk</div>
+        <div>562</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=564" data-page="564">
+        <div>68</div>
+        <div>Surat Al-Qalam</div>
+        <div>564</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=566" data-page="566">
+        <div>69</div>
+        <div>Surat Al-Haqqah</div>
+        <div>566</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=568" data-page="568">
+        <div>70</div>
+        <div>Surat Al-Ma'arij</div>
+        <div>568</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=570" data-page="570">
+        <div>71</div>
+        <div>Surat Nuh</div>
+        <div>570</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=572" data-page="572">
+        <div>72</div>
+        <div>Surat Al-Jinn</div>
+        <div>572</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=574" data-page="574">
+        <div>73</div>
+        <div>Surat Al-Muzzammil</div>
+        <div>574</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=576" data-page="576">
+        <div>74</div>
+        <div>Surat Al-Muddathir</div>
+        <div>576</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=577" data-page="577">
+        <div>75</div>
+        <div>Surat Al-Qiyamah</div>
+        <div>577</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=578" data-page="578">
+        <div>76</div>
+        <div>Surat Al-Insan</div>
+        <div>578</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=580" data-page="580">
+        <div>77</div>
+        <div>Surat Al-Mursalat</div>
+        <div>580</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=582" data-page="582">
+        <div>78</div>
+        <div>Surat An-Naba'</div>
+        <div>582</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=583" data-page="583">
+        <div>79</div>
+        <div>Surat An-Nazi'at</div>
+        <div>583</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=585" data-page="585">
+        <div>80</div>
+        <div>Surat Abasa</div>
+        <div>585</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=586" data-page="586">
+        <div>81</div>
+        <div>Surat At-Takwir</div>
+        <div>586</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=587" data-page="587">
+        <div>82</div>
+        <div>Surat Al-Infitar</div>
+        <div>587</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=587" data-page="587">
+        <div>83</div>
+        <div>Surat Al-Mutaffifin</div>
+        <div>587</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=589" data-page="589">
+        <div>84</div>
+        <div>Surat Al-Inshiqaq</div>
+        <div>589</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=590" data-page="590">
+        <div>85</div>
+        <div>Surat Al-Buruj</div>
+        <div>590</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=591" data-page="591">
+        <div>86</div>
+        <div>Surat At-Tariq</div>
+        <div>591</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=591" data-page="591">
+        <div>87</div>
+        <div>Surat Al-A'la</div>
+        <div>591</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=592" data-page="592">
+        <div>88</div>
+        <div>Surat Al-Ghashiyah</div>
+        <div>592</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=593" data-page="593">
+        <div>89</div>
+        <div>Surat Al-Fajr</div>
+        <div>593</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=594" data-page="594">
+        <div>90</div>
+        <div>Surat Al-Balad</div>
+        <div>594</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=595" data-page="595">
+        <div>91</div>
+        <div>Surat Ash-Shams</div>
+        <div>595</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=595" data-page="595">
+        <div>92</div>
+        <div>Surat Al-Layl</div>
+        <div>595</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=596" data-page="596">
+        <div>93</div>
+        <div>Surat Adh-Dhuha</div>
+        <div>596</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=596" data-page="596">
+        <div>94</div>
+        <div>Surat Al-Inshirah</div>
+        <div>596</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=597" data-page="597">
+        <div>95</div>
+        <div>Surat At-Tin</div>
+        <div>597</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=597" data-page="597">
+        <div>96</div>
+        <div>Surat Al-Alaq</div>
+        <div>597</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=598" data-page="598">
+        <div>97</div>
+        <div>Surat Al-Qadr</div>
+        <div>598</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=598" data-page="598">
+        <div>98</div>
+        <div>Surat Al-Bayinah</div>
+        <div>598</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=599" data-page="599">
+        <div>99</div>
+        <div>Surat Az-Zalzalah</div>
+        <div>599</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=599" data-page="599">
+        <div>100</div>
+        <div>Surat Al-Adiyah</div>
+        <div>599</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=600" data-page="600">
+        <div>101</div>
+        <div>Surat Al-Qari'ah</div>
+        <div>600</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=600" data-page="600">
+        <div>102</div>
+        <div>Surat At-Takathur</div>
+        <div>600</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=601" data-page="601">
+        <div>103</div>
+        <div>Surat Al-Asr</div>
+        <div>601</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=601" data-page="601">
+        <div>104</div>
+        <div>Surat Al-Humazah</div>
+        <div>601</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=601" data-page="601">
+        <div>105</div>
+        <div>Surat Al-Fil</div>
+        <div>601</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=602" data-page="602">
+        <div>106</div>
+        <div>Surat Quraish</div>
+        <div>602</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=602" data-page="602">
+        <div>107</div>
+        <div>Surat Al-Ma'un</div>
+        <div>602</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=602" data-page="602">
+        <div>108</div>
+        <div>Surat Al-Kauthar</div>
+        <div>602</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=603" data-page="603">
+        <div>109</div>
+        <div>Surat Al-Kafirun</div>
+        <div>603</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=603" data-page="603">
+        <div>110</div>
+        <div>Surat An-Nasr</div>
+        <div>603</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=603" data-page="603">
+        <div>111</div>
+        <div>Surat Al-Masad</div>
+        <div>603</div>
+    </a>
+</div>
+
+<div class="list-item">
+    <a href="pdf.html?page=604" data-page="604">
+        <div>112</div>
+        <div>Surat Al-Ikhlas</div>
+        <div>604</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=604" data-page="604">
+        <div>113</div>
+        <div>Surat Al-Falaq</div>
+        <div>604</div>
+    </a>
+</div>
+<div class="list-item">
+    <a href="pdf.html?page=604" data-page="604">
+        <div>114</div>
+        <div>Surat An-Nas</div>
+        <div>604</div>
+    </a>
+</div>
+        </div>
+        <!-- Juz Tab -->
+        <div id="juz-tab" class="tab-content">
+            <div class="list-item">
+              <a href="pdf.html?page=1" data-page="1">
+                    <div>1</div>
+                    <div>Juz 1</div>
+                    <div>1</div>
+                </a>
+            </div>
+            <div class="list-item">
+                <a href="pdf.h"tml?page=22" data-page="22">
+                    <div>2</div>
+                    <div>Juz 2</div>
+                    <div>22</div>
+                </a>
+            </div>
+            <div class="list-item">
+                <a href="pdf.html?page=42" data-page="42">
+                    <div>3</div>
+                    <div>Juz 3</div>
+                    <div>42</div>
+                </a>
+            </div>
+            <div class="list-item">
+                <a href="pdf.html?page=62" data-page="62">
+                    <div>4</div>
+                    <div>Juz 4</div>
+                    <div>62</div>
+                </a>
+            </div>
+            <div class="list-item">
+                <a href="pdf.html?page=82" data-page="82">
+                    <div>5</div>
+                    <div>Juz 5</div>
+                    <div>82</div>
+                </a>
+            </div>
+            <div class="list-item">
+                <a href="pdf.html?page=102" data-page="102">
+                    <div>6</div>
+                    <div>Juz 6</div>
+                    <div>102</div>
+                </a>
+            </div>
+            <div class="list-item">
+                <a href="pdf.html?page=122" data-page="122">
+                    <div>7</div>
+                    <div>Juz 7</div>
+                    <div>122</div>
+                </a>
+            </div>
+            <div class="list-item">
+                <a href="pdf.html?page=142" data-page="142">
+                    <div>8</div>
+                    <div>Juz 8</div>
+                    <div>142</div>
+                </a>
+            </div>
+            <div class="list-item">
+                <a href="pdf.html?page=162" data-page="162">
+                    <div>9</div>
+                    <div>Juz 9</div>
+                    <div>162</div>
+                </a>
+            </div>
+            <div class="list-item">
+                <a href="pdf.html?page=182" data-page="182">
+                    <div>10</div>
+                    <div>Juz 10</div>
+                    <div>182</div>
+                </a>
+            </div>
+            <div class="list-item">
+                <a href="pdf.html?page=202" data-page="202">
+                    <div>11</div>
+                    <div>Juz 11</div>
+                    <div>202</div>
+                </a>
+            </div>
+            <div class="list-item">
+                <a href="pdf.html?page=222" data-page="222">
+                    <div>12</div>
+                    <div>Juz 12</div>
+                    <div>222</div>
+                </a>
+            </div>
+            <div class="list-item">
+                <a href="pdf.html?page=242" data-page="242">
+                    <div>13</div>
+                    <div>Juz 13</div>
+                    <div>242</div>
+                </a>
+            </div>
+       
+    <div class="list-item">
+            <a href="pdf.html?page=262" data-page="262">
+                <div>14</div>
+                <div>Juz 14</div>
+                <div>262</div>
+            </a>
+        </div>
+        <div class="list-item">
+            <a href="pdf.html?page=282" data-page="282">
+                <div>15</div>
+                <div>Juz 15</div>
+                <div>282</div>
+            </a>
+        </div>
+        <div class="list-item">
+            <a href="pdf.html?page=302" data-page="302">
+                <div>16</div>
+                <div>Juz 16</div>
+                <div>302</div>
+            </a>
+        </div>
+        <div class="list-item">
+            <a href="pdf.html?page=322" data-page="322">
+                <div>17</div>
+                <div>Juz 17</div>
+                <div>322</div>
+            </a>
+        </div>
+        <div class="list-item">
+            <a href="pdf.html?page=342" data-page="342">
+                <div>18</div>
+                <div>Juz 18</div>
+                <div>342</div>
+            </a>
+        </div>
+        <div class="list-item">
+            <a href="pdf.html?page=362" data-page="362">
+                <div>19</div>
+                <div>Juz 19</div>
+                <div>362</div>
+            </a>
+        </div>
+        <div class="list-item">
+            <a href="pdf.html?page=382" data-page="382">
+                <div>20</div>
+                <div>Juz 20</div>
+                <div>382</div>
+            </a>
+        </div>
+        <div class="list-item">
+            <a href="pdf.html?page=402" data-page="402">
+                <div>21</div>
+                <div>Juz 21</div>
+                <div>402</div>
+            </a>
+        </div>
+        <div class="list-item">
+            <a href="pdf.html?page=422" data-page="422">
+                <div>22</div>
+                <div>Juz 22</div>
+                <div>422</div>
+            </a>
+        </div>
+        <div class="list-item">
+            <a href="pdf.html?page=442" data-page="442">
+                <div>23</div>
+                <div>Juz 23</div>
+                <div>442</div>
+            </a>
+        </div>
+        <div class="list-item">
+            <a href="pdf.html?page=462" data-page="462">
+                <div>24</div>
+                <div>Juz 24</div>
+                <div>462</div>
+            </a>
+        </div>
+        <div class="list-item">
+            <a href="pdf.html?page=482" data-page="482">
+                <div>25</div>
+                <div>Juz 25</div>
+                <div>482</div>
+            </a>
+        </div>
+        <div class="list-item">
+            <a href="pdf.html?page=502" data-page="502">
+                <div>26</div>
+                <div>Juz 26</div>
+                <div>502</div>
+            </a>
+        </div>
+        <div class="list-item">
+            <a href="pdf.html?page=522" data-page="522">
+                <div>27</div>
+                <div>Juz 27</div>
+                <div>522</div>
+            </a>
+        </div>
+        <div class="list-item">
+            <a href="pdf.html?page=542" data-page="542">
+                <div>28</div>
+                <div>Juz 28</div>
+                <div>542</div>
+            </a>
+        </div>
+        <div class="list-item">
+            <a href="p562html?page=562" data-page="562">
+                <div>29</div>
+                <div>Juz 29</div>
+                <div>562</div>
+            </a>
+        </div>
+        <div class="list-item">
+        <a href="pdf.html?page=582html?page=582" data-page="582">
+                <div>30</div>
+                <div>Juz 30</div>
+                <div>582</div>
+            </a>
+        </div>
+    </div><script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab switching functionality
+    function switchTab(tabId) {
+        const activeTabLink = document.querySelector('.tab-link.active');
+        const activeTabContent = document.querySelector('.tab-content.active');
+
+        if (activeTabLink) {
+            activeTabLink.classList.remove('active');
+        }
+
+        if (activeTabContent) {
+            activeTabContent.classList.remove('active');
+        }
+
+        const newTabLink = document.querySelector(`[data-tab="${tabId}"]`);
+        const newTabContent = document.getElementById(tabId);
+
+        if (newTabLink) {
+            newTabLink.classList.add('active');
+        }
+
+        if (newTabContent) {
+            newTabContent.classList.add('active');
+        }
+    }
+
+    // Event listener for tab links
+    document.querySelectorAll('.tab-link').forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
+            switchTab(this.getAttribute('data-tab'));
+        });
+    });
+
+    // Initialize default tab
+    switchTab('surah-tab');
+
+    // Swipe functionality using Hammer.js
+    const contentElement = document.querySelector('.content');
+    const hammer = new Hammer(contentElement);
+
+    hammer.on('swipeleft', function() {
+        if (document.querySelector('.tab-link.active').getAttribute('data-tab') === 'surah-tab') {
+            switchTab('juz-tab');
+        }
+    });
+
+    hammer.on('swiperight', function() {
+        if (document.querySelector('.tab-link.active').getAttribute('data-tab') === 'juz-tab') {
+            switchTab('surah-tab');
+        }
+    });
+
+    // Scroll event for header animation and content gap adjustment
+    window.addEventListener('scroll', adjustHeader);
+
+    function adjustHeader() {
+        const header = document.querySelector('.header-top');
+        const tabsContainer = document.querySelector('.header-bottom');
+        const tabs = document.querySelectorAll('.tabs a');
+        const content = document.querySelector('.content');
+
+        // Adjust header and content padding based on scroll
+        if (window.scrollY > 50) {
+            header.style.padding = '10px 25px';
+            header.querySelector('h1').style.fontSize = '22px';
+            tabsContainer.style.padding = '12px 0';
+            tabsContainer.style.backgroundColor = '#1f1f1f';
+            tabs.forEach(tab => {
+                tab.style.padding = '10px 22px';
+            });
+
+            content.style.paddingTop = '220px'; // Increase content padding when header shrinks
+        } else {
+            header.style.padding = '15px 25px';
+            header.querySelector('h1').style.fontSize = '26px';
+            tabsContainer.style.padding = '15px 0';
+            tabsContainer.style.backgroundColor = '#1f1f1f';
+            tabs.forEach(tab => {
+                tab.style.padding = '12px 25px';
+            });
+
+            content.style.paddingTop = '160px'; // Reset content padding when header is normal
+        }
+    }
+
+    // Search bar toggle and functionality
+    const searchIcon = document.getElementById('search-icon');
+    const searchBar = document.getElementById('search-bar');
+    const headerBottom = document.querySelector('.header-bottom');
+    const mainContent = document.querySelector('.content');
+
+    function initializePadding() {
+        if (searchBar.classList.contains('active')) {
+            headerBottom.style.marginTop = `${searchBar.offsetHeight}px`;
+            mainContent.style.paddingTop = `${headerBottom.offsetHeight + searchBar.offsetHeight + 160}px`;
+        } else {
+            headerBottom.style.marginTop = '0';
+            mainContent.style.paddingTop = '160px';
+        }
+    }
+
+    initializePadding();
+
+    searchIcon.addEventListener('click', function() {
+    if (searchBar.classList.contains('active')) {
+        searchBar.classList.remove('active');
+        searchBar.style.display = 'none';
+        headerBottom.style.marginTop = '0';
+
+        // Reset marginTop and paddingTop in mainContent
+        mainContent.style.paddingTop = '';
+        mainContent.style.marginTop = '';
+
+        initializePadding();
+    } else {
+        searchBar.classList.add('active');
+        searchBar.style.display = 'flex';
+        headerBottom.style.marginTop = `${1}px`;
+
+        // Adjust the marginTop and paddingTop correctly
+        mainContent.style.marginTop = `${headerBottom.offsetHeight + 18}px`;
+        mainContent.style.paddingTop = `${headerBottom.offsetHeight + 93}px`;
+    }
+});
+
+    // Filter list items based on search input
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.getElementById('search-btn');
+
+    function filterListItems() {
+        const filter = searchInput.value.toLowerCase();
+        document.querySelectorAll('.list-item').forEach(item => {
+            const text = item.innerText.toLowerCase();
+            item.style.display = text.includes(filter) ? '' : 'none';
+        });
+    }
+
+    searchInput.addEventListener('input', filterListItems);
+    searchBtn.addEventListener('click', filterListItems);
+
+    // Trigger a reflow immediately after the page loads to fix the initial gap issue
+    function forceReflow() {
+        document.body.offsetHeight; // Trigger a reflow
+    }
+
+    // Call the forceReflow function after DOM content is loaded
+    forceReflow();
+
+    // Force a layout fix after a small delay to resolve initial gap
+    setTimeout(function() {
+        adjustHeader(); // Manually call adjustHeader after a delay to fix the layout
+    }, 50); // Wait for a short period before applying this fix
+});
+</script>
+</body>
+</html>
